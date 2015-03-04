@@ -1,0 +1,42 @@
+<?php include 'header.php' ?>
+
+<?
+	include 'model/ship.php';
+	include 'model/ransom.php';
+	include 'dao/base_dao.php';
+	include 'dao/ransoms_dao.php';
+	include 'utils/utils.php';
+
+	$ransomsDao = new RansomsDao();
+	$ransomsList = $ransomsDao->getRansoms(PCRBConfig::$numOfRansomEntries);
+
+	$utils = new PCRBUtils();
+?>
+
+<table style="width: 1000px;">
+	<tr style="font-style: bold; font-size: 14pt; text-decoration: underline; height: 30px;">
+		<td style="width: 125px; text-align: center;">Date</td>
+		<td style="width: 175px; text-align: center;">Victim Name</td>
+		<td style="width: 175px; text-align: center;">Ship</td>
+		<td style="width: 100px; text-align: center;">System</td>
+		<td style="width: 175px; text-align: center;">Amount Made</td>
+		<td style="width: 350px; text-align: center;">Pilots Involved</td>
+	</tr>
+
+<?
+	for ($i = 0; $i < sizeof($ransomsList); $i++) {
+		$thisRansom = $ransomsList[$i];		
+
+		echo '<tr style="height: 30px;">';
+			echo '<td style="text-align: center;">' . substr($thisRansom->date, 0, 10) . '</td>';
+			echo '<td style="text-align: center;"><a href="ransom_details.php?ransom_id=' . $thisRansom->id . '">' . $thisRansom->victim_name . '</a></td>';
+			echo '<td style="text-align: center;">' . $thisRansom->ship->ship_name . '</td>';
+			echo '<td style="text-align: center; text-align: center;">' . $thisRansom->system . '</td>';
+			echo '<td style="font-style: italic; text-align: center;">' . number_format($thisRansom->amount) . '</td>';
+			echo '<td style="font-size: 9pt; text-align: center;">' . $utils->generateCommaDelimitedPilotsListFromArray($thisRansom->pilots_involved) . '</td>';
+		echo '</tr>';
+	}
+?>
+</table>
+
+<?php include 'footer.php' ?>

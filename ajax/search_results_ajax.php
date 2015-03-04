@@ -1,0 +1,3 @@
+<?
+	echo 'Search Results Returned!';
+?>
